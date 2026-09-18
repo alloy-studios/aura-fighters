@@ -365,6 +365,124 @@
             transform: translate(-50%, -50%) translateY(0);
         }
 
+        /* ---------------- Title scene ---------------- */
+        #title-screen {
+            position: absolute; inset: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            pointer-events: auto;
+            z-index: 60;
+            /* Vignette only — the live arena stays visible behind the mark */
+            background: radial-gradient(ellipse at 50% 45%, rgba(3,5,12,0.35) 0%, rgba(2,3,8,0.86) 62%, rgba(0,0,0,0.96) 100%);
+            animation: titleIn 0.7s ease-out;
+        }
+        #title-screen.active { display: flex; }
+        /* Hide the combat HUD behind the title so the mark reads cleanly */
+        #title-screen.active ~ #ui-layer,
+        body:has(#title-screen.active) #ui-layer { opacity: 0; }
+        @keyframes titleIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* The title as a designed mark, not a text label */
+        #title-mark { position: relative; text-align: center; }
+        #title-kanji {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -54%);
+            font-size: 260px;
+            line-height: 1;
+            color: rgba(255, 221, 0, 0.07);
+            text-shadow: 0 0 60px rgba(255,170,0,0.18);
+            pointer-events: none;
+            user-select: none;
+        }
+        #title-mark h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-style: italic;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 0.84;
+            position: relative;
+        }
+        #title-line1 {
+            font-size: 78px;
+            letter-spacing: 12px;
+            color: #fff;
+            text-shadow: 4px 5px 0 var(--ink), 0 0 34px rgba(150,190,255,0.5);
+        }
+        #title-line2 {
+            font-size: 78px;
+            letter-spacing: 2px;
+            background: linear-gradient(180deg, #fff6cc 8%, #ffcc22 46%, #ff7a18 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(4px 5px 0 #0a0c16) drop-shadow(0 0 26px rgba(255,170,0,0.55));
+        }
+        #title-rule {
+            width: 240px; height: 2px; margin: 16px auto 0;
+            background: linear-gradient(90deg, transparent, rgba(255,200,80,0.9), transparent);
+        }
+        #title-tag {
+            margin: 12px 0 0;
+            font-size: 14px; font-weight: 600;
+            letter-spacing: 4px; text-transform: uppercase;
+            color: #9fb4d4;
+        }
+
+        #title-start {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 19px; font-weight: 700;
+            letter-spacing: 3px;
+            padding: 13px 40px;
+            color: #08111f;
+            background: linear-gradient(180deg, #ffe37a, #ffb020);
+            border: none;
+            cursor: pointer;
+            clip-path: polygon(0 0, calc(100% - 13px) 0, 100% 13px, 100% 100%, 13px 100%, 0 calc(100% - 13px));
+            box-shadow: 0 0 26px rgba(255,170,0,0.45);
+            animation: titlePulse 1.9s ease-in-out infinite;
+        }
+        #title-start:hover { background: linear-gradient(180deg, #fff3b0, #ffc44d); }
+        @keyframes titlePulse {
+            0%,100% { box-shadow: 0 0 20px rgba(255,170,0,0.35); }
+            50%     { box-shadow: 0 0 40px rgba(255,190,60,0.75); }
+        }
+
+        #title-controls {
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            gap: 9px 26px;
+            font-size: 13px; font-weight: 600;
+            letter-spacing: 1.4px; text-transform: uppercase;
+            color: #8fa3c0;
+            background: rgba(8,11,22,0.66);
+            border: 1px solid rgba(150,190,255,0.16);
+            padding: 15px 26px;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+        #title-controls .tk {
+            display: inline-block;
+            min-width: 30px; text-align: center;
+            margin-right: 8px; padding: 2px 7px;
+            background: #1b2233; color: #dbe7ff;
+            border: 1px solid rgba(150,190,255,0.28);
+            font-family: monospace; font-weight: 700;
+        }
+        #title-hint {
+            margin: 0; max-width: 520px; text-align: center;
+            font-size: 13px; letter-spacing: 0.6px; color: #6f81a0;
+        }
+        #title-hint b { color: #ffcc55; }
+
+        @media (max-height: 620px) {
+            #title-line1, #title-line2 { font-size: 52px; }
+            #title-kanji { font-size: 170px; }
+            #title-controls { grid-template-columns: repeat(4, auto); font-size: 11px; padding: 10px 16px; }
+        }
+
         .modal-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -592,6 +710,32 @@
             Charge: <span class="key">Hold C</span> &nbsp;|&nbsp;
             Transform: <span class="key">T</span>
         </div>
+    </div>
+
+    <!-- Title scene. Sits over the live canvas, which keeps rendering the arena and
+         a slowly turning fighter behind it as an attract shot. -->
+    <div id="title-screen" class="active">
+        <div id="title-mark">
+            <div id="title-kanji">氣</div>
+            <h1 id="title-line1">AURA</h1>
+            <h1 id="title-line2">FIGHTERS</h1>
+            <div id="title-rule"></div>
+            <p id="title-tag">Eleven forms. One gauntlet. No ceiling.</p>
+        </div>
+
+        <button id="title-start">BEGIN THE GAUNTLET</button>
+
+        <div id="title-controls">
+            <div><span class="tk">WASD</span> Move</div>
+            <div><span class="tk">Mouse</span> Aim</div>
+            <div><span class="tk">L-Click</span> Melee</div>
+            <div><span class="tk">1</span> Ki Blast</div>
+            <div><span class="tk">2</span> Special</div>
+            <div><span class="tk">Q</span> Dash</div>
+            <div><span class="tk">C</span> Charge Ki</div>
+            <div><span class="tk">T</span> Transform</div>
+        </div>
+        <p id="title-hint">Charge to full Ki, then <b>Transform</b>. Watch for the red ring &mdash; that's a telegraph. Dash through it.</p>
     </div>
 
     <div class="modal-overlay" id="shenron-modal">
@@ -5086,7 +5230,39 @@ enemy:      ${enemy ? enemy.name : '-'}
 enemy hp:   ${enemy ? Math.round(enemy.hp) + '/' + Math.round(enemy.maxHp) : '-'}`;
 }
 
-spawnEnemyForWave();
+// --- Title scene boot -------------------------------------------------------
+// The game opens on the title rather than dropping straight into wave 1. The
+// attract fighter is shown in Super so the aura VFX is on display immediately.
+gameState.phase = 'title';
+player.formIndex = 1;
+player.ki = player.maxKi;
+
+function startGame() {
+    const scr = document.getElementById('title-screen');
+    if (!scr.classList.contains('active')) return;
+    scr.classList.remove('active');
+
+    // Reset out of the attract pose into a real run
+    player.formIndex = 0;
+    player.ki = 0;
+    player.angle = 0;
+    particles = []; projectiles = []; hitboxes = []; effects = []; decals = [];
+
+    const formUI = document.getElementById('form-name');
+    formUI.innerText = FORMS[0].name;
+    formUI.style.color = FORMS[0].color;
+    formUI.style.textShadow = 'none';
+
+    gameState.phase = 'fight';
+    camera.targetZoom = 1;
+    spawnEnemyForWave();
+}
+document.getElementById('title-start').addEventListener('click', startGame);
+// Any key also starts, so the player never hunts for the button
+window.addEventListener('keydown', (e) => {
+    if (gameState.phase === 'title' && !e.repeat) startGame();
+});
+
 updateDragonBallTrackerUI();
 
 function hexToRgb(hex) {
@@ -5213,6 +5389,18 @@ function gameLoop(time) {
         dt = rawDt * 0.06;
     }
     
+    // Title attract mode: no combat, but the arena and a slowly turning fighter keep
+    // rendering behind the title mark so the screen is alive rather than a static card.
+    if (gameState.phase === 'title') {
+        player.x = 0; player.y = 0; player.vx = 0; player.vy = 0;
+        player.angle += 0.0045 * dt;              // idle turn
+        player.ki = player.maxKi;
+        player.charging = false;
+        player.updateStatus(dt);
+        player.updateAura();                      // the aura VFX is the attract shot
+        camera.targetZoom = 1.35;
+    }
+
     // Update logic — combat only advances while a fight is actively underway
     if (gameState.phase === 'fight') {
         player.update(dt);
@@ -5368,8 +5556,11 @@ function gameLoop(time) {
     if (hitboxes.length > 50) hitboxes.splice(0, hitboxes.length - 50);
     
     // Camera follow player
+    // On the title the fighter is framed low, below the title mark, so the aura backs
+    // the type without the sprite itself cutting through the tagline.
+    const camBiasY = gameState.phase === 'title' ? height * 0.30 : 0;
     camera.x += (player.x - width/2 - camera.x) * 0.1;
-    camera.y += (player.y - height/2 - camera.y) * 0.1;
+    camera.y += (player.y - height/2 - camBiasY - camera.y) * 0.1;
 
     // Camera zoom punch, easing back to neutral
     camera.targetZoom += (1 - camera.targetZoom) * 0.08;
